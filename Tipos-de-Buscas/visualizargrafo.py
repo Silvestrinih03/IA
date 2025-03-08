@@ -2,8 +2,10 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 class VisualizarGrafo: 
-    def __init__(self, grafo):
+    def __init__(self, grafo, inicio, fim):
         self.grafo = grafo
+        self.inicio = inicio
+        self.fim = fim
 
     # Função que cria o desenho gráfico utilizando a biblioteca NetworkX e Matplotlib
     def desenhar_grafo(self):
@@ -13,17 +15,14 @@ class VisualizarGrafo:
             return
         
         G = nx.Graph()
-        for vertice, vizinhos in grafo.conexoes.items():
+        for vertice, vizinhos in self.grafo.conexoes.items():
             for vizinho in vizinhos:
                 G.add_edge(vertice, vizinho)
-
-        if grafo.qtdVertices > 100:
-            layout = nx.kamada_kawai_layout(G, weight=None)
-        else:
-            layout = nx.spring_layout(G, seed=42, k=0.2)  # Aumentando o parâmetro k para mais espaçamento
-
+        pos = nx.spring_layout(G, seed=42, k=0.2)
         plt.figure(figsize=(12, 8))
-        nx.draw(G, layout, with_labels=True, node_color="lightblue", edge_color="gray",
-                node_size=300 if grafo.qtdVertices > 100 else 500, font_size=6 if grafo.qtdVertices > 100 else 8)
-        plt.title("Grafo Gerado")
+        nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray",
+                node_size=500, font_size=8)
+        nx.draw_networkx_nodes(G, pos, nodelist=[self.inicio], node_color="red", node_size=700)
+        nx.draw_networkx_nodes(G, pos, nodelist=[self.fim], node_color="green", node_size=700)
+        plt.title("Grafo Gerado com Pontos de Início e Fim Destacados")
         plt.show()
